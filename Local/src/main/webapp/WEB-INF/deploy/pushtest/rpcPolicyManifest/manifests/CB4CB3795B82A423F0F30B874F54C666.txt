@@ -1,0 +1,2 @@
+serviceClass: com.mobile.push.client.GreetingService
+path: AF2BE873BA79EC1E9DCC454D3916635B.gwt.rpc

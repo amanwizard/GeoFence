@@ -1,0 +1,228 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>Local</groupId>
+	<artifactId>Local</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+	<properties>
+		<phonegap-build.server>phonegap-build</phonegap-build.server>
+	</properties>
+
+	<!-- <pluginRepositories> <pluginRepository> <id>snapshots.jboss.org</id> 
+		<name>JBoss Snapshot Repository</name> <url>http://snapshots.jboss.org/maven2</url> 
+		<layout>default</layout> <snapshots> <enabled>true</enabled> </snapshots> 
+		</pluginRepository> </pluginRepositories> -->
+
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<testSourceDirectory>test</testSourceDirectory>
+		<plugins>
+
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>copy-resources01</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/template</outputDirectory>
+							<encoding>UTF-8</encoding>
+							<resources>
+								<resource>
+									<directory>${basedir}/source</directory>
+									<includes>
+										<include>**/*</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+
+					</execution>
+					<execution>
+						<id>copy-resources02</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/template/www</outputDirectory>
+							<encoding>UTF-8</encoding>
+							<resources>
+								<resource>
+									<directory>${basedir}/target/Local-0.0.1-SNAPSHOT</directory>
+									<includes>
+										<include>**/*</include>
+									</includes>
+								</resource>
+								<resource>
+									<directory>${basedir}/src/main/webapp</directory>
+									<includes>
+										<include>**/*</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-source-plugin</artifactId> 
+				<executions> <execution> <id>attach-sources</id> <phase>package</phase> <goals> 
+				<goal>jar</goal> </goals> </execution> </executions> </plugin> -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<executable>${default.java.home}/bin/javac</executable>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<version>2.7.0</version>
+				<executions>
+					<execution>
+						<configuration>
+							<module>com.mobile.push.PushTest</module>
+							<hostedWebapp>${basedir}/src/main/webapp</hostedWebapp>
+							<configFile>src/config.xml</configFile>
+							<noServer>false</noServer>
+							<productionMode>false</productionMode>
+							<copyWebapp>true</copyWebapp>
+							<localWorker>1</localWorker>
+							<draftCompile>true</draftCompile>
+							<!-- <inplace>true</inplace>   -->
+						</configuration>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- <plugin> <groupId>org.myproject.plugins</groupId> <artifactId>my-cool-maven-plugin</artifactId> 
+				<version>1.0</version> <configuration> <deploymentDirectory>${application-home}/deploy</deploymentDirectory> 
+				</configuration> </plugin> -->
+
+			<!-- <plugin> <groupId>org.jboss.errai</groupId> <artifactId>cordova-maven-plugin</artifactId> 
+				<version>3.1.2.Final</version> <executions> <execution> <id>build</id> <phase>package</phase> 
+				<goals> <goal>build-project</goal> </goals> </execution> </executions> </plugin> -->
+			<plugin>
+				<artifactId>exec-maven-plugin</artifactId>
+				<groupId>org.codehaus.mojo</groupId>
+				<executions>
+					<execution><!-- Run our version calculation script -->
+						<id>Version Calculation</id>
+						<phase>package</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>${basedir}/runcompiler.sh</executable>
+							<!-- <arguments> <argument>build</argument> <argument>android</argument> 
+								</arguments> -->
+							<workingDirectory>${basedir}/target/template</workingDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- <plugin> <groupId>com.github.chrisprice</groupId> <artifactId>phonegap-build-maven-plugin</artifactId> 
+				<version>0.0.8</version> <executions> <execution> <id>phonegap-build</id> 
+				<goals> <goal>clean</goal> <goal>build</goal> </goals> <configuration> <configFile>src/config.xml</configFile> 
+				<zipFile>phonegap-build-maven-plugin-0.0.8-SNAPSHOT.zip</zipFile> <platforms> 
+				<platform>android</platform> </platforms> </configuration> </execution> </executions> 
+				</plugin> -->
+		</plugins>
+
+
+		<resources>
+			<resource>
+				<directory>src</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											gwt-maven-plugin
+										</artifactId>
+										<versionRange>
+											[2.7.0,)
+										</versionRange>
+										<goals>
+											<goal>compile</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>com.googlecode.gwtphonegap</groupId>
+			<artifactId>gwtphonegap</artifactId>
+			<version>3.5.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>gwt-maven-plugin</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-urlshortener</artifactId>
+			<version>v1-rev43-1.21.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.java.openjfx.backport</groupId>
+			<artifactId>openjfx-78-backport-compat</artifactId>
+			<version>1.8.0.1</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20160212</version>
+		</dependency>
+
+	</dependencies>
+
+
+</project>
